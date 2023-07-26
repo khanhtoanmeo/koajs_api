@@ -11,25 +11,15 @@ export function getAll(queryObj) {
   // todo : chỗ này mình có thể viết gọn hơn được không nhỉ ? anh thấy viết thế này nó hơi dài dòng.
   // có thể viết đk sort trước nếu có rồi đén điều kiện limit nếu có
 
-  if (limit && orderBy)
-    return productsClone
-      .sort((productA, productB) =>
-        orderBy === ASCENDING
-          ? getTime(productA) - getTime(productB)
-          : getTime(productB) - getTime(productA)
-      )
-      .slice(0, limit);
-
-  if (limit) return productsClone.slice(0, limit);
-
   if (orderBy)
-    return productsClone.sort((productA, productB) =>
+    productsClone.sort((productA, productB) =>
       orderBy === ASCENDING
         ? getTime(productA) - getTime(productB)
         : getTime(productB) - getTime(productA)
     );
+  if (limit) return productsClone.slice(0, limit);
 
-  return products;
+  return productsClone;
 }
 
 export function getOne(id, fields = []) {
@@ -62,11 +52,12 @@ export function update(id, data) {
 
   const newProducts = products.map((product) => {
     //todo: chỗ này viết thế này cũng được cơ mà anh nghĩ là viết điều kiện product-id===id return .... , nếu không thì return product thì nó có vẻ xuôi và dễ hiểu hơn
-    if (product.id !== id) return product;
-    return {
-      ...product,
-      ...data,
-    };
+    if (product.id === id)
+      return {
+        ...product,
+        ...data,
+      };
+    return product;
   });
   saveProducts(newProducts, () => console.log(`Product with id ${id} updated`));
   return true;

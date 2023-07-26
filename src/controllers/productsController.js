@@ -16,7 +16,7 @@ export function getProducts(ctx) {
     ctx.status = 500;
     ctx.body = {
       //todo : success sai chính tả nè , sau để ý nhé , anh thấy có mấy chỗ luôn sửa lại nhé
-      succes: false,
+      success: false,
       error: e.message,
     };
   }
@@ -39,13 +39,13 @@ export function getProduct(ctx) {
 
     ctx.status = 200;
     ctx.body = {
-      succes: true,
+      success: true,
       data: product,
     };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      succes: false,
+      success: false,
       error: e.message,
     };
   }
@@ -58,12 +58,12 @@ export function saveProduct(ctx) {
 
     ctx.status = 201;
     ctx.body = {
-      succes: true,
+      success: true,
     };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      succes: false,
+      success: false,
       error: e.message,
     };
   }
@@ -85,12 +85,12 @@ export function updateProduct(ctx) {
 
     ctx.status = 200;
     ctx.body = {
-      succes: true,
+      success: true,
     };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      succes: false,
+      success: false,
       error: e.message,
     };
   }
@@ -111,12 +111,12 @@ export function deleteProduct(ctx) {
 
     ctx.status = 200;
     ctx.body = {
-      succes: true,
+      success: true,
     };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      succes: false,
+      success: false,
       error: e.message,
     };
   }
