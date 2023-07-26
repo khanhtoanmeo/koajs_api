@@ -8,6 +8,8 @@ export function getAll(queryObj) {
 
   const { limit, orderBy } = queryObj;
   const productsClone = [...products];
+  // todo : chỗ này mình có thể viết gọn hơn được không nhỉ ? anh thấy viết thế này nó hơi dài dòng.
+  // có thể viết đk sort trước nếu có rồi đén điều kiện limit nếu có
 
   if (limit && orderBy)
     return productsClone
@@ -59,6 +61,7 @@ export function update(id, data) {
   if (!getOne(id)) return false;
 
   const newProducts = products.map((product) => {
+    //todo: chỗ này viết thế này cũng được cơ mà anh nghĩ là viết điều kiện product-id===id return .... , nếu không thì return product thì nó có vẻ xuôi và dễ hiểu hơn
     if (product.id !== id) return product;
     return {
       ...product,

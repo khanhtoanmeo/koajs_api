@@ -18,7 +18,7 @@ export const productRouter = new Router({
 productRouter.get("/products", productsQueryMiddleware, getProducts);
 
 productRouter.get("/product/:id", productQueryMiddleware, getProduct);
-
+//todo : anh nghĩ chỗ này không cần thêm s đâu mình save 1 mà
 productRouter.post("/products", productCreateMiddleware, saveProduct);
 
 productRouter.put("/product/:id", productUpdateMiddleware, updateProduct);
