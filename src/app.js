@@ -1,7 +1,6 @@
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import dotenv from "dotenv";
-import fs from "fs";
 import { generateProducts } from "./helpers/generateProducts.js";
 import { productRouter } from "./routes/productRoute.js";
 
