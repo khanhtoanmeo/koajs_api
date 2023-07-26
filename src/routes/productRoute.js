@@ -17,10 +17,10 @@ export const productRouter = new Router({
 
 productRouter.get("/products", productsQueryMiddleware, getProducts);
 
-productRouter.get("/products/:id", productQueryMiddleware, getProduct);
+productRouter.get("/product/:id", productQueryMiddleware, getProduct);
 
 productRouter.post("/products", productCreateMiddleware, saveProduct);
 
-productRouter.put("/products/:id", productUpdateMiddleware, updateProduct);
+productRouter.put("/product/:id", productUpdateMiddleware, updateProduct);
 
-productRouter.delete("/products/:id", deleteProduct);
+productRouter.delete("/product/:id", deleteProduct);

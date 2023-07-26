@@ -1,4 +1,3 @@
-import fs from "fs";
 import { ASCENDING } from "../../const/constants.js";
 import { getTime } from "../../helpers/getTime.js";
 import { randomUUID } from "crypto";

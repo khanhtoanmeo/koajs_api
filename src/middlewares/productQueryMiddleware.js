@@ -4,7 +4,7 @@ export async function productQueryMiddleware(ctx, next) {
   try {
     const fields = ctx.query.fields?.split(",");
 
-    if (!fields) next();
+    if (!fields) return next();
 
     if (
       !fields.every((field) =>

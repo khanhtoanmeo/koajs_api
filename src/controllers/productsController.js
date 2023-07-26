@@ -31,15 +31,14 @@ export function getProduct(ctx) {
     if (!product) {
       ctx.status = 404;
       return (ctx.body = {
-        status: "error",
+        status: "false",
         message: "Product not found with that id",
       });
     }
 
     ctx.status = 200;
-    console.log("kkkkkkk");
-    console.log(product);
     ctx.body = {
+      succes: true,
       data: product,
     };
   } catch (e) {
@@ -78,7 +77,7 @@ export function updateProduct(ctx) {
       ctx.status = 404;
 
       return (ctx.body = {
-        status: "error",
+        status: "false",
         message: "Product not found with that id",
       });
     }
@@ -104,7 +103,7 @@ export function deleteProduct(ctx) {
       ctx.status = 404;
 
       return (ctx.body = {
-        status: "error",
+        status: "false",
         message: "Product not found with that id",
       });
     }
