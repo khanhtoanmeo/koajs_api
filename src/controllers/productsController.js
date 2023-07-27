@@ -15,7 +15,6 @@ export function getProducts(ctx) {
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      //todo : success sai chính tả nè , sau để ý nhé , anh thấy có mấy chỗ luôn sửa lại nhé
       success: false,
       error: e.message,
     };
@@ -32,7 +31,7 @@ export function getProduct(ctx) {
     if (!product) {
       ctx.status = 404;
       return (ctx.body = {
-        status: "false",
+        status: false,
         message: "Product not found with that id",
       });
     }
@@ -78,7 +77,7 @@ export function updateProduct(ctx) {
       ctx.status = 404;
 
       return (ctx.body = {
-        status: "false",
+        status: false,
         message: "Product not found with that id",
       });
     }
@@ -104,7 +103,7 @@ export function deleteProduct(ctx) {
       ctx.status = 404;
 
       return (ctx.body = {
-        status: "false",
+        status: false,
         message: "Product not found with that id",
       });
     }

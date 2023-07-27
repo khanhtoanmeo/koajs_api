@@ -2,22 +2,19 @@ import { ASCENDING } from "../../const/constants.js";
 import { getTime } from "../../helpers/getTime.js";
 import { randomUUID } from "crypto";
 import { getProducts, saveProducts } from "../../helpers/databaseQuery.js";
+import { pick } from "../../helpers/pick.js";
 
-export function getAll(queryObj) {
+export function getAll({ limit, orderBy } = {}) {
   const products = getProducts();
-
-  const { limit, orderBy } = queryObj;
-  const productsClone = [...products];
-  // todo : chỗ này mình có thể viết gọn hơn được không nhỉ ? anh thấy viết thế này nó hơi dài dòng.
-  // có thể viết đk sort trước nếu có rồi đén điều kiện limit nếu có
+  let productsClone = [...products];
 
   if (orderBy)
-    productsClone.sort((productA, productB) =>
+    productsClone = productsClone.sort((productA, productB) =>
       orderBy === ASCENDING
         ? getTime(productA) - getTime(productB)
         : getTime(productB) - getTime(productA)
     );
-  if (limit) return productsClone.slice(0, limit);
+  if (limit) productsClone = productsClone.slice(0, limit);
 
   return productsClone;
 }
@@ -26,11 +23,7 @@ export function getOne(id, fields = []) {
   const products = getProducts();
 
   const product = products.find((product) => product.id === id);
-  if (fields.length)
-    return fields.reduce((acc, cur) => {
-      acc[cur] = product[cur];
-      return acc;
-    }, {});
+  if (fields.length) return pick(product, fields);
 
   return product;
 }
@@ -48,10 +41,10 @@ export function save(data) {
 
 export function update(id, data) {
   const products = getProducts();
-  if (!getOne(id)) return false;
+  const product = products.find((product) => product.id === id);
+  if (!product) return false;
 
   const newProducts = products.map((product) => {
-    //todo: chỗ này viết thế này cũng được cơ mà anh nghĩ là viết điều kiện product-id===id return .... , nếu không thì return product thì nó có vẻ xuôi và dễ hiểu hơn
     if (product.id === id)
       return {
         ...product,
@@ -65,7 +58,8 @@ export function update(id, data) {
 
 export function deleteById(id) {
   const products = getProducts();
-  if (!getOne(id)) return false;
+  const product = products.find((product) => product.id === id);
+  if (!product) return false;
 
   const newProducts = products.filter((product) => product.id !== id);
   saveProducts(newProducts, () => console.log(`Product with id ${id} deleted`));
