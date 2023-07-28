@@ -1,3 +1,3 @@
-export function getTime(product) {
-  return new Date(product.createdAt).getTime();
+export function getTime(data) {
+  return new Date(data.createdAt).getTime();
 }

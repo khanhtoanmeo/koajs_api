@@ -1,7 +1,7 @@
 import yup from "yup";
 import { ASCENDING, DESCENDING } from "../const/constants.js";
 
-export async function productsQueryMiddleware(ctx, next) {
+export async function todosQueryMiddleware(ctx, next) {
   try {
     const queryObj = ctx.query;
 

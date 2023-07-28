@@ -1,6 +1,6 @@
 import { ALLOWED_QUERY_FIELDS } from "../const/constants.js";
 
-export async function productQueryMiddleware(ctx, next) {
+export async function todoQueryMiddleware(ctx, next) {
   try {
     const fields = ctx.query.fields?.split(",");
 

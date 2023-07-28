@@ -4,14 +4,14 @@ import {
   getOne,
   save,
   update,
-} from "../database/repositories/productsRepository.js";
+} from "../database/repositories/todosRepository.js";
 
-export function getProducts(ctx) {
+export function getToDos(ctx) {
   try {
     const { query } = ctx;
-    const products = getAll(query);
+    const todos = getAll(query);
     ctx.status = 200;
-    ctx.body = { data: products };
+    ctx.body = { data: todos };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
@@ -21,25 +21,25 @@ export function getProducts(ctx) {
   }
 }
 
-export function getProduct(ctx) {
+export function getTodo(ctx) {
   try {
     const { id } = ctx.params;
     const fields = ctx.query.fields?.split(",");
 
-    const product = getOne(id, fields);
+    const todo = getOne(id, fields);
 
-    if (!product) {
+    if (!todo) {
       ctx.status = 404;
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Todo not found with that id",
       });
     }
 
     ctx.status = 200;
     ctx.body = {
       success: true,
-      data: product,
+      data: todo,
     };
   } catch (e) {
     ctx.status = 500;
@@ -50,14 +50,15 @@ export function getProduct(ctx) {
   }
 }
 
-export function saveProduct(ctx) {
+export function saveTodo(ctx) {
   try {
     const data = ctx.request.body;
-    save(data);
+    const todo = save(data);
 
     ctx.status = 201;
     ctx.body = {
       success: true,
+      todo,
     };
   } catch (e) {
     ctx.status = 500;
@@ -68,17 +69,17 @@ export function saveProduct(ctx) {
   }
 }
 
-export function updateProduct(ctx) {
+export function updateTodo(ctx) {
   try {
     const data = ctx.request.body;
     const { id } = ctx.params;
-    const product = update(id, data);
-    if (!product) {
+    const todo = update(id, data);
+    if (!todo) {
       ctx.status = 404;
 
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Todo not found with that id",
       });
     }
 
@@ -95,16 +96,16 @@ export function updateProduct(ctx) {
   }
 }
 
-export function deleteProduct(ctx) {
+export function deleteTodo(ctx) {
   try {
     const { id } = ctx.params;
-    const product = deleteById(id);
-    if (!product) {
+    const todo = deleteById(id);
+    if (!todo) {
       ctx.status = 404;
 
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Todo not found with that id",
       });
     }
 

@@ -1,14 +1,14 @@
 import fs from "fs";
 import { DB_URL } from "../const/constants.js";
 
-export function getProducts() {
+export function getTodos() {
   const dbContent = fs.readFileSync(DB_URL);
   if (!dbContent) return undefined;
 
-  const { data: products } = JSON.parse(dbContent);
-  return products;
+  const { data: todos } = JSON.parse(dbContent);
+  return todos;
 }
 
-export function saveProducts(products, cb) {
-  fs.writeFile(DB_URL, JSON.stringify({ data: products }), cb);
+export function saveTodos(todos, cb) {
+  fs.writeFile(DB_URL, JSON.stringify({ data: todos }), cb);
 }
