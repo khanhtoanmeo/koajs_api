@@ -5,18 +5,17 @@ import { getTodos, saveTodos } from "../../helpers/databaseQuery.js";
 import { pick } from "../../helpers/pick.js";
 
 export function getAll({ limit, orderBy } = {}) {
-  const todos = getTodos();
-  let todosClone = [...todos];
+  let todos = getTodos();
 
   if (orderBy)
-    todosClone = todosClone.sort((todoA, todoB) =>
+    todos = todos.sort((todoA, todoB) =>
       orderBy === ASCENDING
         ? getTime(todoA) - getTime(todoB)
         : getTime(todoB) - getTime(todoA)
     );
-  if (limit) todosClone = todosClone.slice(0, limit);
+  if (limit) todos = todos.slice(0, limit);
 
-  return todosClone;
+  return todos;
 }
 
 export function getOne(id, fields = []) {
@@ -30,10 +29,10 @@ export function getOne(id, fields = []) {
 
 export function save(data) {
   const id = randomUUID();
-  const createdAt = new Date().toISOString();
+  const createdAt = new Date();
 
   const todos = getTodos();
-  const todo = { id, ...data, createdAt };
+  const todo = { id, ...data, isCompleted: false, createdAt };
   const newTodos = [...todos, todo];
   saveTodos(newTodos, () => console.log("New todo created"));
   return todo;
@@ -48,7 +47,7 @@ export function update(id, data) {
     if (todo.id === id)
       return {
         ...todo,
-        ...data,
+        isCompleted: !todo.isCompleted,
       };
     return todo;
   });
@@ -63,5 +62,26 @@ export function deleteById(id) {
 
   const newTodos = todos.filter((todo) => todo.id !== id);
   saveTodos(newTodos, () => console.log(`Todo with id ${id} deleted`));
+  return true;
+}
+
+export function deleteMany(idList) {
+  const todos = getTodos();
+
+  const newTodos = todos.filter((todo) => !idList.includes(todo.id));
+  saveTodos(newTodos, () => console.log(`Todos deleted`));
+  return true;
+}
+
+export function updateMany(idList) {
+  const todos = getTodos();
+
+  const newTodos = todos.map((todo) => {
+    if (!idList.includes(todo.id)) return todo;
+    console.log(!todo.isCompleted);
+    return { ...todo, isCompleted: !todo.isCompleted };
+  });
+
+  saveTodos(newTodos, () => console.log(`Todos updated`));
   return true;
 }

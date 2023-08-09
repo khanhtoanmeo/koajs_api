@@ -1,9 +1,11 @@
 import {
   deleteById,
+  deleteMany,
   getAll,
   getOne,
   save,
   update,
+  updateMany,
 } from "../database/repositories/todosRepository.js";
 
 export function getToDos(ctx) {
@@ -54,6 +56,7 @@ export function saveTodo(ctx) {
   try {
     const data = ctx.request.body;
     const todo = save(data);
+    if (!todo) throw new Error("Fail to add to do");
 
     ctx.status = 201;
     ctx.body = {
@@ -106,6 +109,61 @@ export function deleteTodo(ctx) {
       return (ctx.body = {
         status: false,
         message: "Todo not found with that id",
+      });
+    }
+
+    ctx.status = 200;
+    ctx.body = {
+      success: true,
+    };
+  } catch (e) {
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      error: e.message,
+    };
+  }
+}
+
+export function deleteTodos(ctx) {
+  try {
+    const { ids } = ctx.request.body;
+
+    const todos = deleteMany(ids);
+    console.log(ids);
+    if (!todos) {
+      ctx.status = 404;
+
+      return (ctx.body = {
+        status: false,
+        message: "Some todos may not existed",
+      });
+    }
+
+    ctx.status = 200;
+    ctx.body = {
+      success: true,
+    };
+  } catch (e) {
+    ctx.status = 500;
+    ctx.body = {
+      success: false,
+      error: e.message,
+    };
+  }
+}
+
+export function updateTodos(ctx) {
+  try {
+    const { ids } = ctx.request.body;
+
+    const todos = updateMany(ids);
+    if (!todos) {
+      ctx.status = 404;
+
+      return (ctx.body = {
+        status: false,
+        message: "Some todos may not existed",
       });
     }
 

@@ -3,7 +3,7 @@ import { DB_URL } from "../const/constants.js";
 
 export function getTodos() {
   const dbContent = fs.readFileSync(DB_URL);
-  if (!dbContent) return undefined;
+  if (!dbContent) return [];
 
   const { data: todos } = JSON.parse(dbContent);
   return todos;

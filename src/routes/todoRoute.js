@@ -5,6 +5,8 @@ import {
   saveTodo,
   updateTodo,
   deleteTodo,
+  deleteTodos,
+  updateTodos,
 } from "../controllers/todosController.js";
 import { todosQueryMiddleware } from "../middlewares/todosQueryMiddleware.js";
 import { todoCreateMiddleware } from "../middlewares/todoCreateMiddleware.js";
@@ -24,3 +26,7 @@ todoRouter.post("/todos", todoCreateMiddleware, saveTodo);
 todoRouter.put("/todo/:id", todoUpdateMiddleware, updateTodo);
 
 todoRouter.delete("/todo/:id", deleteTodo);
+
+todoRouter.delete("/todos", deleteTodos);
+
+todoRouter.put("/todos", updateTodos);

@@ -6,7 +6,6 @@ export async function todoCreateMiddleware(ctx, next) {
 
     const schema = yup.object().shape({
       title: yup.string().required(),
-      isCompleted: yup.boolean().required(),
     });
 
     await schema.validate(todo);

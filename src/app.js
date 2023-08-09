@@ -3,12 +3,14 @@ import { koaBody } from "koa-body";
 import dotenv from "dotenv";
 import { todoRouter } from "./routes/todoRoute.js";
 import cors from "@koa/cors";
-
+import morgan from "koa-morgan";
 dotenv.config({ path: "./src/.env" });
 
 const app = new Koa();
-app.use(cors({ origin: "http://localhost:3000" }));
-app.use(koaBody());
+app.use(morgan("dev"));
+app.use(cors({ origin: "*" }));
+app.use(koaBody({ parsedMethods: ["POST", "PUT", "PATCH", "DELETE"] }));
+
 const port = process.env.PORT || 8888;
 
 app.use(todoRouter.routes());
