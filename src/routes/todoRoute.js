@@ -23,6 +23,8 @@ todoRouter.get("/todo/:id", todoQueryMiddleware, getTodo);
 
 todoRouter.post("/todos", todoCreateMiddleware, saveTodo);
 
+//todo: liệu có gộp đc 2 cái update và delete thành chỉ cần 2 endpoints thôi không em nhỉ ? mỗi có có tần 2 endpoint mà chức năng thì gần giống nhau ? thử gộp lại xem sao nhé
+
 todoRouter.put("/todo/:id", todoUpdateMiddleware, updateTodo);
 
 todoRouter.delete("/todo/:id", deleteTodo);
