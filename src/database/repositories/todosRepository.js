@@ -38,33 +38,6 @@ export function save(data) {
   return todo;
 }
 
-export function update(id, data) {
-  const todos = getTodos();
-  const todo = todos.find((todo) => todo.id === id);
-  if (!todo) return false;
-
-  const newTodos = todos.map((todo) => {
-    if (todo.id === id)
-      return {
-        ...todo,
-        isCompleted: !todo.isCompleted,
-      };
-    return todo;
-  });
-  saveTodos(newTodos, () => console.log(`Todo with id ${id} updated`));
-  return true;
-}
-
-export function deleteById(id) {
-  const todos = getTodos();
-  const todo = todos.find((todo) => todo.id === id);
-  if (!todo) return false;
-
-  const newTodos = todos.filter((todo) => todo.id !== id);
-  saveTodos(newTodos, () => console.log(`Todo with id ${id} deleted`));
-  return true;
-}
-
 export function deleteMany(idList) {
   const todos = getTodos();
 

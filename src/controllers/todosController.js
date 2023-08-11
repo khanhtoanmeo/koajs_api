@@ -1,10 +1,8 @@
 import {
-  deleteById,
   deleteMany,
   getAll,
   getOne,
   save,
-  update,
   updateMany,
 } from "../database/repositories/todosRepository.js";
 
@@ -62,59 +60,6 @@ export function saveTodo(ctx) {
     ctx.body = {
       success: true,
       todo,
-    };
-  } catch (e) {
-    ctx.status = 500;
-    ctx.body = {
-      success: false,
-      error: e.message,
-    };
-  }
-}
-
-export function updateTodo(ctx) {
-  try {
-    const data = ctx.request.body;
-    const { id } = ctx.params;
-    const todo = update(id, data);
-    if (!todo) {
-      ctx.status = 404;
-
-      return (ctx.body = {
-        status: false,
-        message: "Todo not found with that id",
-      });
-    }
-
-    ctx.status = 200;
-    ctx.body = {
-      success: true,
-    };
-  } catch (e) {
-    ctx.status = 500;
-    ctx.body = {
-      success: false,
-      error: e.message,
-    };
-  }
-}
-
-export function deleteTodo(ctx) {
-  try {
-    const { id } = ctx.params;
-    const todo = deleteById(id);
-    if (!todo) {
-      ctx.status = 404;
-
-      return (ctx.body = {
-        status: false,
-        message: "Todo not found with that id",
-      });
-    }
-
-    ctx.status = 200;
-    ctx.body = {
-      success: true,
     };
   } catch (e) {
     ctx.status = 500;
