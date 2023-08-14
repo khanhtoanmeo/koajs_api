@@ -4,8 +4,9 @@ import { randomUUID } from "crypto";
 import { getTodos, saveTodos } from "../../helpers/databaseQuery.js";
 import { pick } from "../../helpers/pick.js";
 
-export function getAll({ limit, orderBy } = {}) {
+export function getAll(params = {}) {
   let todos = getTodos();
+  const { limit, orderBy } = params;
 
   if (orderBy)
     todos = todos.sort((todoA, todoB) =>
