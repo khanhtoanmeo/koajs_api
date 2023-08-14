@@ -1,8 +1,9 @@
 import fs from "fs";
 import { DB_URL } from "../const/constants.js";
+import db from "../database/db.js";
 
 export function getTodos() {
-  const dbContent = fs.readFileSync(DB_URL);
+  const dbContent = db.collection("");
   if (!dbContent) return [];
 
   const { data: todos } = JSON.parse(dbContent);

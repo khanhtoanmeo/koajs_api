@@ -1,17 +1,17 @@
-import yup from "yup";
+import { object, number, string } from "yup";
 import { ASCENDING, DESCENDING } from "../const/constants.js";
 
 export async function todosQueryMiddleware(ctx, next) {
   try {
     const queryObj = ctx.query;
 
-    const schema = yup.object().shape({
-      limit: yup.number().optional().moreThan(0).positive(),
-      orderBy: yup.string().optional().oneOf([ASCENDING, DESCENDING]),
+    const schema = object().shape({
+      limit: number().optional().moreThan(0).positive(),
+      orderBy: string().optional().oneOf([ASCENDING, DESCENDING]),
     });
 
     await schema.validate(queryObj);
-    next();
+    return next();
   } catch (e) {
     ctx.status = 400;
     ctx.body = {

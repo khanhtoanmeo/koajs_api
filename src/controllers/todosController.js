@@ -6,10 +6,10 @@ import {
   updateMany,
 } from "../database/repositories/todosRepository.js";
 
-export function getToDos(ctx) {
+export async function getToDos(ctx) {
   try {
     const { query } = ctx;
-    const todos = getAll(query);
+    const todos = await getAll(query);
     ctx.status = 200;
     ctx.body = { data: todos };
   } catch (e) {
@@ -21,12 +21,11 @@ export function getToDos(ctx) {
   }
 }
 
-export function getTodo(ctx) {
+export async function getTodo(ctx) {
   try {
     const { id } = ctx.params;
     const fields = ctx.query.fields?.split(",");
-
-    const todo = getOne(id, fields);
+    const todo = await getOne(id, fields);
 
     if (!todo) {
       ctx.status = 404;
@@ -35,7 +34,6 @@ export function getTodo(ctx) {
         message: "Todo not found with that id",
       });
     }
-
     ctx.status = 200;
     ctx.body = {
       success: true,
@@ -50,10 +48,10 @@ export function getTodo(ctx) {
   }
 }
 
-export function saveTodo(ctx) {
+export async function saveTodo(ctx) {
   try {
     const data = ctx.request.body;
-    const todo = save(data);
+    const todo = await save(data);
     if (!todo) throw new Error("Fail to add to do");
 
     ctx.status = 201;
@@ -70,13 +68,12 @@ export function saveTodo(ctx) {
   }
 }
 
-export function deleteTodos(ctx) {
+export async function deleteTodos(ctx) {
   try {
     const { ids } = ctx.request.body;
 
-    const todos = deleteMany(ids);
-    console.log(ids);
-    if (!todos) {
+    const todosDeleted = await deleteMany(ids);
+    if (!todosDeleted) {
       ctx.status = 404;
 
       return (ctx.body = {
@@ -98,12 +95,12 @@ export function deleteTodos(ctx) {
   }
 }
 
-export function updateTodos(ctx) {
+export async function updateTodos(ctx) {
   try {
-    const { ids } = ctx.request.body;
+    const { todos } = ctx.request.body;
 
-    const todos = updateMany(ids);
-    if (!todos) {
+    const todosUpdated = await updateMany(todos);
+    if (!todosUpdated) {
       ctx.status = 404;
 
       return (ctx.body = {

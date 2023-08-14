@@ -1,15 +1,15 @@
-import yup from "yup";
+import { string, object } from "yup";
 
 export async function todoCreateMiddleware(ctx, next) {
   try {
     const todo = ctx.request.body;
 
-    const schema = yup.object().shape({
-      title: yup.string().required(),
+    const schema = object().shape({
+      title: string().required(),
     });
 
     await schema.validate(todo);
-    next();
+    return next();
   } catch (e) {
     ctx.status = 400;
     ctx.body = {

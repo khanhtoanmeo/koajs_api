@@ -1,7 +1,7 @@
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import dotenv from "dotenv";
-import { todoRouter } from "./routes/todoRoute.js";
+import { todoRouter } from "./routes/todoRoute";
 import cors from "@koa/cors";
 import morgan from "koa-morgan";
 dotenv.config({ path: "./src/.env" });

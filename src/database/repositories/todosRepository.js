@@ -1,61 +1,68 @@
-import { ASCENDING } from "../../const/constants.js";
-import { getTime } from "../../helpers/getTime.js";
 import { randomUUID } from "crypto";
 import { getTodos, saveTodos } from "../../helpers/databaseQuery.js";
+import db from "../db.js";
 import { pick } from "../../helpers/pick.js";
 
-export function getAll(params = {}) {
-  let todos = getTodos();
+export async function getAll(params = {}) {
+  let todosRef = await db.collection("todos");
+
   const { limit, orderBy } = params;
 
-  if (orderBy)
-    todos = todos.sort((todoA, todoB) =>
-      orderBy === ASCENDING
-        ? getTime(todoA) - getTime(todoB)
-        : getTime(todoB) - getTime(todoA)
-    );
-  if (limit) todos = todos.slice(0, limit);
+  if (orderBy) todosRef = todosRef.orderBy(orderBy);
+  if (limit) todosRef = todosRef.limit(limit);
+
+  const todosSnapshot = await todosRef.get();
+  const todos = todosSnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  }));
 
   return todos;
 }
 
-export function getOne(id, fields = []) {
-  const todos = getTodos();
-
-  const todo = todos.find((todo) => todo.id === id);
-  if (fields.length) return pick(todo, fields);
+export async function getOne(id, fields = []) {
+  let todosRef = await db.collection("todos");
+  const todoRef = await todosRef.doc(id).get();
+  const todo = todoRef.data();
+  if (fields.length) {
+    const picked = pick(todo, fields);
+    return picked;
+  }
 
   return todo;
 }
 
-export function save(data) {
-  const id = randomUUID();
+export async function save(data) {
+  const todosRef = db.collection("todos");
   const createdAt = new Date();
 
-  const todos = getTodos();
-  const todo = { id, ...data, isCompleted: false, createdAt };
-  const newTodos = [...todos, todo];
-  saveTodos(newTodos, () => console.log("New todo created"));
-  return todo;
+  const newTodo = { ...data, isCompleted: false, createdAt };
+
+  const todoRef = await todosRef.add(newTodo);
+  const todo = await todoRef.get();
+
+  return { ...todo.data(), id: todo.id };
 }
 
-export function deleteMany(idList) {
-  const todos = getTodos();
-
-  const newTodos = todos.filter((todo) => !idList.includes(todo.id));
-  saveTodos(newTodos, () => console.log(`Todos deleted`));
+export async function deleteMany(ids) {
+  const todosRef = db.collection("todos");
+  ids.forEach((id) => {
+    todosRef.doc(id).delete();
+  });
   return true;
 }
 
-export function updateMany(idList) {
-  const todos = getTodos();
-
-  const newTodos = todos.map((todo) => {
-    if (!idList.includes(todo.id)) return todo;
-    console.log(!todo.isCompleted);
-    return { ...todo, isCompleted: !todo.isCompleted };
+export async function updateMany(todos) {
+  const todosRef = db.collection("todos");
+  todos.forEach((todo) => {
+    const { id, isCompleted } = todo;
+    todosRef.doc(id).set(
+      {
+        isCompleted,
+      },
+      { merge: true }
+    );
   });
 
-  saveTodos(newTodos, () => console.log(`Todos updated`));
   return true;
 }
