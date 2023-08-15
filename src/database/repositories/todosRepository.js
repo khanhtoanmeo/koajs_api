@@ -1,15 +1,14 @@
-import { randomUUID } from "crypto";
-import { getTodos, saveTodos } from "../../helpers/databaseQuery.js";
 import db from "../db.js";
 import { pick } from "../../helpers/pick.js";
 
 export async function getAll(params = {}) {
-  let todosRef = await db.collection("todos");
+  let todosRef = db.collection("todos");
 
-  const { limit, orderBy } = params;
+  const { limit, sort } = params;
+  const [criteria, order] = sort?.split(" ");
 
-  if (orderBy) todosRef = todosRef.orderBy(orderBy);
-  if (limit) todosRef = todosRef.limit(limit);
+  if (sort) todosRef = todosRef.orderBy(criteria, order);
+  if (limit) todosRef = todosRef.limit(+limit);
 
   const todosSnapshot = await todosRef.get();
   const todos = todosSnapshot.docs.map((doc) => ({
@@ -21,7 +20,7 @@ export async function getAll(params = {}) {
 }
 
 export async function getOne(id, fields = []) {
-  let todosRef = await db.collection("todos");
+  let todosRef = db.collection("todos");
   const todoRef = await todosRef.doc(id).get();
   const todo = todoRef.data();
   if (fields.length) {
@@ -54,9 +53,9 @@ export async function deleteMany(ids) {
 
 export async function updateMany(todos) {
   const todosRef = db.collection("todos");
-  todos.forEach((todo) => {
+  todos.forEach(async (todo) => {
     const { id, isCompleted } = todo;
-    todosRef.doc(id).set(
+    await todosRef.doc(id).set(
       {
         isCompleted,
       },

@@ -8,8 +8,6 @@ exports.getAll = getAll;
 exports.getOne = getOne;
 exports.save = save;
 exports.updateMany = updateMany;
-var _crypto = require("crypto");
-var _databaseQuery = require("../../helpers/databaseQuery.js");
 var _db = _interopRequireDefault(require("../db.js"));
 var _pick = require("../../helpers/pick.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19,13 +17,15 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 async function getAll(params = {}) {
-  let todosRef = await _db.default.collection("todos");
+  let todosRef = _db.default.collection("todos");
   const {
     limit,
-    orderBy
+    sort
   } = params;
-  if (orderBy) todosRef = todosRef.orderBy(orderBy);
-  if (limit) todosRef = todosRef.limit(limit);
+  const [criteria, order] = sort?.split(" ");
+  console.log(typeof limit, criteria, order);
+  if (sort) todosRef = todosRef.orderBy(criteria, order);
+  if (limit) todosRef = todosRef.limit(+limit);
   const todosSnapshot = await todosRef.get();
   const todos = todosSnapshot.docs.map(doc => _objectSpread(_objectSpread({}, doc.data()), {}, {
     id: doc.id
@@ -33,7 +33,7 @@ async function getAll(params = {}) {
   return todos;
 }
 async function getOne(id, fields = []) {
-  let todosRef = await _db.default.collection("todos");
+  let todosRef = _db.default.collection("todos");
   const todoRef = await todosRef.doc(id).get();
   const todo = todoRef.data();
   if (fields.length) {

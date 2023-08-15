@@ -6,7 +6,6 @@ import {
   deleteTodos,
   updateTodos,
 } from "../controllers/todosController.js";
-import { todosQueryMiddleware } from "../middlewares/todosQueryMiddleware.js";
 import { todoCreateMiddleware } from "../middlewares/todoCreateMiddleware.js";
 import { todoQueryMiddleware } from "../middlewares/todoQueryMiddleware.js";
 
@@ -14,7 +13,7 @@ export const todoRouter = new Router({
   prefix: "/api",
 });
 
-todoRouter.get("/todos", todosQueryMiddleware, getToDos);
+todoRouter.get("/todos", getToDos);
 
 todoRouter.get("/todo/:id", todoQueryMiddleware, getTodo);
 
