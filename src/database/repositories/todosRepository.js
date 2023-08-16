@@ -55,8 +55,7 @@ export async function updateMany(todos) {
   const todosRef = getTodosRef();
 
   const promises = todos.map((todo) => updateTodo({ ...todo, todosRef }));
-  const res = await Promise.all(promises);
-  if (!res) return false;
+  await Promise.all(promises);
 
   return true;
 }
