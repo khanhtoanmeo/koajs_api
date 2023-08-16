@@ -2,6 +2,7 @@ import { pick } from "../../helpers/pick.js";
 import { FieldValue } from "firebase-admin/firestore";
 import { getTodosRef } from "../../helpers/getTodosRef.js";
 import { prepareDoc } from "../../helpers/prepareDoc.js";
+import { updateTodo } from "../../helpers/updateTodo.js";
 
 export async function getAll(params = {}) {
   let todosRef = getTodosRef();
@@ -53,24 +54,9 @@ export async function deleteMany(ids) {
 export async function updateMany(todos) {
   const todosRef = getTodosRef();
 
-  //todo : nghiên cứu cách viết dạng này nhé 
-  // const promises = todos.map(todo=>{
-  //   return updateTodo()
-  // })
-   
-  // await Promise.all(promises)
+  const promises = todos.map((todo) => updateTodo({ ...todo, todosRef }));
+  const res = await Promise.all(promises);
+  if (!res) return false;
 
-  for (const todo of todos) {
-    const { id, isCompleted } = todo;
-    console.log(todo);
-    await todosRef.doc(id).update({
-      isCompleted,
-    });
-  }
   return true;
-}
-
-//todo: nghiên cứu thử theo hường này giúp anh nhé :
-export async function updateTodo(ids,postData){
-  //... Code here 
 }
