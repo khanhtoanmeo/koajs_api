@@ -52,6 +52,14 @@ export async function deleteMany(ids) {
 
 export async function updateMany(todos) {
   const todosRef = getTodosRef();
+
+  //todo : nghiên cứu cách viết dạng này nhé 
+  // const promises = todos.map(todo=>{
+  //   return updateTodo()
+  // })
+   
+  // await Promise.all(promises)
+
   for (const todo of todos) {
     const { id, isCompleted } = todo;
     console.log(todo);
@@ -60,4 +68,9 @@ export async function updateMany(todos) {
     });
   }
   return true;
+}
+
+//todo: nghiên cứu thử theo hường này giúp anh nhé :
+export async function updateTodo(ids,postData){
+  //... Code here 
 }
