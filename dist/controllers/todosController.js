@@ -16,6 +16,8 @@ async function getToDos(ctx) {
     } = ctx;
     const todos = await (0, _todosRepository.getAll)(query);
     ctx.status = 200;
+    console.log("hhooho");
+    console.log(todos);
     ctx.body = {
       data: todos
     };

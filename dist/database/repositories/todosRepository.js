@@ -8,32 +8,32 @@ exports.getAll = getAll;
 exports.getOne = getOne;
 exports.save = save;
 exports.updateMany = updateMany;
-var _db = _interopRequireDefault(require("../db.js"));
 var _pick = require("../../helpers/pick.js");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _firestore = require("firebase-admin/firestore");
+var _getTodosRef = require("../../helpers/getTodosRef.js");
+var _prepareDoc = require("../../helpers/prepareDoc.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 async function getAll(params = {}) {
-  let todosRef = _db.default.collection("todos");
+  let todosRef = (0, _getTodosRef.getTodosRef)();
   const {
     limit,
     sort
   } = params;
-  const [criteria, order] = sort?.split(" ");
-  console.log(typeof limit, criteria, order);
-  if (sort) todosRef = todosRef.orderBy(criteria, order);
+  if (sort) {
+    const [criteria, order] = sort.split(" ");
+    todosRef = todosRef.orderBy(criteria, order);
+  }
   if (limit) todosRef = todosRef.limit(+limit);
   const todosSnapshot = await todosRef.get();
-  const todos = todosSnapshot.docs.map(doc => _objectSpread(_objectSpread({}, doc.data()), {}, {
-    id: doc.id
-  }));
+  const todos = todosSnapshot.docs.map(doc => (0, _prepareDoc.prepareDoc)(doc));
   return todos;
 }
 async function getOne(id, fields = []) {
-  let todosRef = _db.default.collection("todos");
+  let todosRef = (0, _getTodosRef.getTodosRef)();
   const todoRef = await todosRef.doc(id).get();
   const todo = todoRef.data();
   if (fields.length) {
@@ -43,37 +43,36 @@ async function getOne(id, fields = []) {
   return todo;
 }
 async function save(data) {
-  const todosRef = _db.default.collection("todos");
-  const createdAt = new Date();
+  const todosRef = (0, _getTodosRef.getTodosRef)();
+  const createdAt = _firestore.FieldValue.serverTimestamp();
+  console.log(createdAt);
   const newTodo = _objectSpread(_objectSpread({}, data), {}, {
     isCompleted: false,
     createdAt
   });
   const todoRef = await todosRef.add(newTodo);
-  const todo = await todoRef.get();
-  return _objectSpread(_objectSpread({}, todo.data()), {}, {
-    id: todo.id
-  });
+  return (0, _prepareDoc.prepareDoc)(newTodo, todoRef.id);
 }
 async function deleteMany(ids) {
-  const todosRef = _db.default.collection("todos");
-  ids.forEach(id => {
+  //todo: cái này cũng như cái dưới cần tìm cách tối ưu hơn nữa
+  const todosRef = (0, _getTodosRef.getTodosRef)();
+  for (const id of ids) {
     todosRef.doc(id).delete();
-  });
+  }
   return true;
 }
 async function updateMany(todos) {
-  const todosRef = _db.default.collection("todos");
-  todos.forEach(todo => {
+  const todosRef = (0, _getTodosRef.getTodosRef)();
+  // todo : anh không nghĩ là nên dùng forEach ở đây , + nên dùng update khi update chứ không dùng set , tìm cách khác tối ưu hơn
+  for (const todo of todos) {
     const {
       id,
       isCompleted
     } = todo;
-    todosRef.doc(id).set({
+    console.log(todo);
+    await todosRef.doc(id).update({
       isCompleted
-    }, {
-      merge: true
     });
-  });
+  }
   return true;
 }

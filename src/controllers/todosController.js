@@ -11,6 +11,8 @@ export async function getToDos(ctx) {
     const { query } = ctx;
     const todos = await getAll(query);
     ctx.status = 200;
+    console.log("hhooho");
+    console.log(todos);
     ctx.body = { data: todos };
   } catch (e) {
     ctx.status = 500;
