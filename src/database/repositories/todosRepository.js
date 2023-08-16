@@ -4,6 +4,12 @@ import { getTodosRef } from "../../helpers/getTodosRef.js";
 import { prepareDoc } from "../../helpers/prepareDoc.js";
 import { updateTodo } from "../../helpers/updateTodo.js";
 
+//todo thuong anh se viet nhu the nay 
+//const collection = db.collection("todos")
+//hoặc 
+//const todosRef = db.collection("todos")
+// như thế này thì tất cả các hàm ở bên trong đều sử dụng đc 
+
 export async function getAll(params = {}) {
   let todosRef = getTodosRef();
   const { limit, sort } = params;
@@ -33,6 +39,7 @@ export async function getOne(id, fields = []) {
 }
 
 export async function save(data) {
+  // sao mình không đẩy todoref thành 1 hàm tổng quát nhỉ ? 
   const todosRef = getTodosRef();
   const createdAt = FieldValue.serverTimestamp();
   console.log(createdAt);
@@ -45,6 +52,8 @@ export async function save(data) {
 
 export async function deleteMany(ids) {
   const todosRef = getTodosRef();
+
+  // todo : làm tương tự như updateMany nhé 
   for (const id of ids) {
     todosRef.doc(id).delete();
   }
