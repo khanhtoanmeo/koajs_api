@@ -1,17 +1,19 @@
 import {
-  deleteById,
+  deleteMany,
   getAll,
   getOne,
   save,
-  update,
-} from "../database/repositories/productsRepository.js";
+  updateMany,
+} from "../database/repositories/todosRepository.js";
 
-export function getProducts(ctx) {
+export async function getToDos(ctx) {
   try {
     const { query } = ctx;
-    const products = getAll(query);
+    const todos = await getAll(query);
     ctx.status = 200;
-    ctx.body = { data: products };
+    console.log("hhooho");
+    console.log(todos);
+    ctx.body = { data: todos };
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
@@ -21,25 +23,23 @@ export function getProducts(ctx) {
   }
 }
 
-export function getProduct(ctx) {
+export async function getTodo(ctx) {
   try {
     const { id } = ctx.params;
     const fields = ctx.query.fields?.split(",");
+    const todo = await getOne(id, fields);
 
-    const product = getOne(id, fields);
-
-    if (!product) {
+    if (!todo) {
       ctx.status = 404;
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Todo not found with that id",
       });
     }
-
     ctx.status = 200;
     ctx.body = {
       success: true,
-      data: product,
+      data: todo,
     };
   } catch (e) {
     ctx.status = 500;
@@ -50,14 +50,16 @@ export function getProduct(ctx) {
   }
 }
 
-export function saveProduct(ctx) {
+export async function saveTodo(ctx) {
   try {
     const data = ctx.request.body;
-    save(data);
+    const todo = await save(data);
+    if (!todo) throw new Error("Fail to add to do");
 
     ctx.status = 201;
     ctx.body = {
       success: true,
+      todo,
     };
   } catch (e) {
     ctx.status = 500;
@@ -68,17 +70,17 @@ export function saveProduct(ctx) {
   }
 }
 
-export function updateProduct(ctx) {
+export async function deleteTodos(ctx) {
   try {
-    const data = ctx.request.body;
-    const { id } = ctx.params;
-    const product = update(id, data);
-    if (!product) {
+    const { ids } = ctx.request.body;
+
+    const todosDeleted = await deleteMany(ids);
+    if (!todosDeleted) {
       ctx.status = 404;
 
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Some todos may not existed",
       });
     }
 
@@ -95,16 +97,17 @@ export function updateProduct(ctx) {
   }
 }
 
-export function deleteProduct(ctx) {
+export async function updateTodos(ctx) {
   try {
-    const { id } = ctx.params;
-    const product = deleteById(id);
-    if (!product) {
+    const { todos } = ctx.request.body;
+
+    const todosUpdated = await updateMany(todos);
+    if (!todosUpdated) {
       ctx.status = 404;
 
       return (ctx.body = {
         status: false,
-        message: "Product not found with that id",
+        message: "Some todos may not existed",
       });
     }
 
