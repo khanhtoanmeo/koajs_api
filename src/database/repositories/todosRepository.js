@@ -1,17 +1,12 @@
 import { pick } from "../../helpers/pick.js";
 import { FieldValue } from "firebase-admin/firestore";
-import { getTodosRef } from "../../helpers/getTodosRef.js";
+import { getColRef } from "../../helpers/getColRef.js";
 import { prepareDoc } from "../../helpers/prepareDoc.js";
 import { updateTodo } from "../../helpers/updateTodo.js";
 
-//todo thuong anh se viet nhu the nay 
-//const collection = db.collection("todos")
-//hoặc 
-//const todosRef = db.collection("todos")
-// như thế này thì tất cả các hàm ở bên trong đều sử dụng đc 
+const todosRef = getColRef();
 
 export async function getAll(params = {}) {
-  let todosRef = getTodosRef();
   const { limit, sort } = params;
 
   if (sort) {
@@ -39,11 +34,7 @@ export async function getOne(id, fields = []) {
 }
 
 export async function save(data) {
-  // sao mình không đẩy todoref thành 1 hàm tổng quát nhỉ ? 
-  const todosRef = getTodosRef();
   const createdAt = FieldValue.serverTimestamp();
-  console.log(createdAt);
-
   const newTodo = { ...data, isCompleted: false, createdAt };
   const todoRef = await todosRef.add(newTodo);
 
@@ -51,18 +42,13 @@ export async function save(data) {
 }
 
 export async function deleteMany(ids) {
-  const todosRef = getTodosRef();
+  const promises = ids.map((id) => todosRef.doc(id).delete());
+  await Promise.all(promises);
 
-  // todo : làm tương tự như updateMany nhé 
-  for (const id of ids) {
-    todosRef.doc(id).delete();
-  }
   return true;
 }
 
 export async function updateMany(todos) {
-  const todosRef = getTodosRef();
-
   const promises = todos.map((todo) => updateTodo({ ...todo, todosRef }));
   await Promise.all(promises);
 
