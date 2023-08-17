@@ -33,15 +33,11 @@ async function getAll(params = {}) {
   const todos = todosSnapshot.docs.map(doc => (0, _prepareDoc.prepareDoc)(doc));
   return todos;
 }
-async function getOne(id, fields = []) {
-  let todosRef = getTodosRef();
+async function getOne(id, fields = ["title", "isCompleted"]) {
   const todoRef = await todosRef.doc(id).get();
-  const todo = todoRef.data();
-  if (fields.length) {
-    const picked = (0, _pick.pick)(todo, fields);
-    return picked;
-  }
-  return todo;
+  const todo = (0, _prepareDoc.prepareDoc)(todoRef.data(), id);
+  const picked = (0, _pick.pick)(todo, fields);
+  return picked;
 }
 async function save(data) {
   const createdAt = _firestore.FieldValue.serverTimestamp();
