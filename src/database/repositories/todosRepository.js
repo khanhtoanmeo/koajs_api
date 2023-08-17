@@ -24,7 +24,10 @@ export async function getAll(params = {}) {
 export async function getOne(id, fields = []) {
   let todosRef = getTodosRef();
   const todoRef = await todosRef.doc(id).get();
+  // chỗ này có cần prepareData không ? 
   const todo = todoRef.data();
+  //todo : chỗ này anh nghĩ fields = [..] nên có 1 data default gì đó chứ người ta chẳng chọn fields nào thì mình hiện hết thì cái pick chẳng có ý nghĩa để giấu mấy cái như token nữa .
+  // xem lại chỗ này giúp anh nhé 
   if (fields.length) {
     const picked = pick(todo, fields);
     return picked;
